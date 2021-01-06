@@ -31,7 +31,7 @@ const obtenerUsuarios = async(req = request, res = response) => {
         Usuario
             .find({}, 'nombre email role google img') // También filtra parámetros
             .skip(desde) // Muestra desde el número de usuario registrado
-            .limit(5), // Limita a 5 resultados
+            .limit(10), // Limita a 5 resultados
         
         // Conteo de usuarios registrados
         Usuario.countDocuments()
