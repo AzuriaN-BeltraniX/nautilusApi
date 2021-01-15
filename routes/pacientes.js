@@ -34,7 +34,7 @@ router.post('/',
         validarAdmin, // Valida el rol de administración del usuario logueado
         check('nombre', 'El nombre del paciente es necesario.').not().isEmpty(), // Verifica existencia del nombre.
         check('edad', 'La edad del paciente es necesario.').not().isEmpty(), // Verifica existencia de la edad.
-        check('curp', 'La CURP del paciente es obligatoria.').not().isEmpty(), // Verifica existencia la existencia.
+        check('email', 'El email del paciente es requerido.').isEmail(), // Verifica existencia del email..
         check('doctor', 'Requiere de un médico asociado').not().isEmpty(), // Verifica un médico asociado.
         validarCampos // Valida los datos enviados
     ],

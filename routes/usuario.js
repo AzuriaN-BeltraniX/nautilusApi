@@ -29,7 +29,7 @@ const router = Router();
 */
 
 // Obtiene los usuarios -------------------------------------------
-router.get('/', existeJWT, obtenerUsuarios);
+router.get('/', existeJWT, validarAdmin_Usuario, obtenerUsuarios);
 
 // Crea los usuarios ----------------------------------------------
 router.post('/',

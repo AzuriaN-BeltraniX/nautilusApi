@@ -13,7 +13,7 @@ const PacienteSchema = Schema({
         type: Number,
         required: true
     },
-    curp: {
+    email: {
         type: String,
         required: true
     },

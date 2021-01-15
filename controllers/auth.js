@@ -51,7 +51,7 @@ const login = async(req, res = response) => {
             // msg: 'LogIn en funcionamiento!!!'
             usuario: usuarioDB, // Muestra los datos del usuario logueado
             token, // Muestra el token
-            // menu: getMenuFrontEnd(usuarioDB.role) // Muestra el menu del Sidebar dependiendo su Role de Usuario
+            menu: getMenuFrontEnd(usuarioDB.role) // Muestra el menu del Sidebar dependiendo su Role de Usuario
         })
 
         // console.log(`Rol de usuario: ${usuarioDB}`);

@@ -15,14 +15,31 @@ const { getUserData } = require('../middlewares/existe-jwt');
 // Controlador para listar los doctores registrados
 const obtenerDoctores = async (req, res = response) => {
     // Obteniendo los doctores:
-    const doctores = await Doctor.find() // Busca los doctor
-        .populate('usuario', 'nombre role') // Muestra todos los datos del usuario que hizo el registro.
+    // const doctores = await Doctor.find() // Busca los doctor
+    //     .populate('usuario', 'nombre role') // Muestra todos los datos del usuario que hizo el registro.
+
+    // Filtrando número de usuarios mostrados:
+    const desde = Number(req.query.desde) || 0; // Obtiene el parámetro y lo transforma a número, si no exite, por defecto es 0
+    /** PRUEBA: Imprime en consola el número de página solicitado. */ 
+    // console.log(desde);
+    // console.log(req.query);
+
+    // Promesa...
+    const [doctores, total] = await Promise.all([ // Muestra el resultado de las siguientes promesas:
+        // Lista los usuarios existentes en la base de datos:
+        Doctor
+            .find({}) // También filtra parámetros
+            .skip(desde) // Muestra desde el número de usuario registrado
+            .limit(10), // Limita a 5 resultados
+        
+        // Conteo de usuarios registrados
+        Doctor.countDocuments()
+    ]);
 
     // Imprimiendo al respuesta de la petición
     res.json({
         ok: true, // Listado exitoso
-
-        total: doctores.length, // Indica el número total de registros
+        total,
         doctores // Lista de doctores registrados
     });
 }

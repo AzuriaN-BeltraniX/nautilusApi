@@ -17,14 +17,35 @@ const { getUserData } = require('../middlewares/existe-jwt');
 // Controlador para listar a los pacientes registrados
 const obtenerPacientes = async (req, res = response) => {
     // Obteniendo los pacientes:
-    const pacientes = await Paciente.find() // Busca los pacientes
-        .populate('usuario', 'nombre role') // Muestra todos los datos del usuario que hizo el registro.
-        .populate('doctor', 'nombre cedulaProf') // Muestra todos los datos del doctor asignado.
+    // const pacientes = await Paciente.find() // Busca los pacientes
+    //     .populate('usuario', 'nombre role') // Muestra todos los datos del usuario que hizo el registro.
+    //     .populate('doctor', 'nombre cedulaProf') // Muestra todos los datos del doctor asignado.
+
+    // Filtrando número de usuarios mostrados:
+    const desde = Number(req.query.desde) || 0; // Obtiene el parámetro y lo transforma a número, si no exite, por defecto es 0
+    /** PRUEBA: Imprime en consola el número de página solicitado. */ 
+    // console.log(desde);
+    // console.log(req.query);
+
+    // Promesa...
+    const [pacientes, total] = await Promise.all([ // Muestra el resultado de las siguientes promesas:
+        // Lista los usuarios existentes en la base de datos:
+        Paciente
+            .find() // También filtra parámetros
+            .skip(desde) // Muestra desde el número de usuario registrado
+            .limit(10) // Limita a 5 resultados
+            .populate('doctor', 'nombre cedulaProf') // Muestra todos los datos del doctor asignado.
+            .populate('usuario', 'nombre'), // Muestra todos los datos del usuario que hizo el registro.
+
+        
+        // Conteo de usuarios registrados
+        Paciente.countDocuments()
+    ]);
 
     // Imprimiendo al respuesta de la petición
     res.json({
         ok: true, // Listado exitoso
-        total: pacientes.length, // Indica el número total de registros
+        total, // Indica el número total de registros
         pacientes // Lista de pacientes registrados
     });
 };
@@ -45,15 +66,15 @@ const crearPaciente = async (req, res = response) => {
 
     // Captura los datos del BODY:
     const { 
-        curp, // Captura la CURP
+        email, // Captura la email del paciente
         doctor // Captura la ID del doctor a asociar
     } = req.body;
 
     // Promesa...
     try {
-        // Verifica si la CURP es única en el registro:
-        const existeCurp = await Paciente.findOne({curp}); // Busca la curp en la base de datos
-        if (existeCurp) { // Si existe la CURP en la base de datos, entonces...
+        // Verifica si el email es único en el registro:
+        const existeEmail = await Paciente.findOne({email}); // Busca el email en la base de datos
+        if (existeEmail) { // Si existe el email en la base de datos, entonces...
             return res.status(400).json({ // ... retorna estado de la petición
                 ok: false,
                 header: '¡Hey!',
